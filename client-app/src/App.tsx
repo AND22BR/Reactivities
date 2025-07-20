@@ -7,11 +7,11 @@ function App() {
   const [activities, setActivities]=useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/activities')
+    axios.get('https://localhost:5000/api/activities')
     .then(response => {
       setActivities(response.data)
     })
-  })
+})
 
   return (
     <div className='m-2'>

@@ -17,13 +17,13 @@ builder.Services.AddCors(opt =>{
     {
         policy.AllowAnyHeader()
             .AllowAnyMethod()
-            .WithOrigins("http://localhost:3000");
+            .WithOrigins("http://localhost:3000","https://localhost:3000");
     });
 });
 
 
 var app = builder.Build();
-
+    
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

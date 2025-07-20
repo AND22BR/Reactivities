@@ -25,5 +25,11 @@ namespace API.Controllers
             return await _context.Activities.FindAsync(id);
         }
 
+        [HttpPost("{id}")]
+        public async Task<ActionResult<Activity>> CreateActivity(Guid id)
+        {
+            return await _context.Activities.FindAsync(id);
+        }
+
     }
 }
