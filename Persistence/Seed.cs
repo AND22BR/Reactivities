@@ -1,4 +1,5 @@
 using Domain;
+using Microsoft.AspNetCore.Identity;
 
 namespace Persistence
 {
@@ -120,6 +121,54 @@ namespace Persistence
 
             await context.Activities.AddRangeAsync(activities);
             await context.SaveChangesAsync();
+        }
+
+        public async Task SeedSuperUser(AuthDbContext context, UserManager<User> userManager)
+        {
+            if (context.Users.Where(x=>x.Email=="admin@energyadepto.com").Any()) return;
+
+            var superUser = new User()
+            {
+                DisplayName = "Super Admin",
+                UserName = "admin@energyadepto.com",
+                Email = "admin@energyadepto.com",
+            };
+
+            var result = await userManager.CreateAsync(superUser, "E550b39ddffd!6a6c00c081aad5116aad06fa840182e184$$0ea859dce783@8ee");
+            if (result.Succeeded == false)
+            {
+                throw new Exception("Failed to create super user. "+result.Errors.ToString());
+            }
+        }
+        
+         public async Task SeedTestUsers(AuthDbContext context, UserManager<User> userManager)
+        {
+            if (context.Users.Where(x=>x.Email!="admin@energyadepto.com").Any()) return;
+
+            var normalUser = new User()
+            {
+                DisplayName="Bob",
+                UserName = "bob@test.com",
+                Email = "bob@test.com",
+            };
+
+            var normalUser2 = new User()
+            {
+                DisplayName="John",
+                UserName = "john@test.com",
+                Email = "john@test.com",
+            };
+
+            var normalUser3 = new User()
+            {
+                DisplayName="Jane",
+                UserName = "jane@test.com",
+                Email = "jane@test.com",
+            };
+
+            await userManager.CreateAsync(normalUser, "Bob123!");
+            await userManager.CreateAsync(normalUser2, "John123!");
+            await userManager.CreateAsync(normalUser3, "Jane123!");
         }
     }
 }
