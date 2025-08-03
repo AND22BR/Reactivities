@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.DTOs;
+using Application.UserData.Commands;
 using Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Persistence;
 
 namespace API.Controllers
 {
@@ -34,14 +36,40 @@ namespace API.Controllers
 
             var result = await _signInManager.UserManager.CreateAsync(user, registerDto.Password);
 
-            if (result.Succeeded) return Ok();
-
-            foreach (var error in result.Errors)
+            if(!result.Succeeded)
             {
-                ModelState.AddModelError(error.Code, error.Description);
+                foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(error.Code, error.Description);
+                    }
+
+                return ValidationProblem();    
             }
 
-            return ValidationProblem();
+            var userResult = await _signInManager.UserManager.FindByEmailAsync(user.Email);
+
+            var newUserInfo = new UserData()
+            {
+                Id = userResult.Id,
+                Email = userResult.Email,
+                UserName = userResult.UserName,
+                DisplayName = userResult.DisplayName,
+                Bio = userResult.Bio,
+                ImageUrl=userResult.ImageUrl
+            };
+
+            try
+            {
+                await Mediator.Send(new CreateUserData.Command { UserData = newUserInfo });
+            }
+            catch (System.Exception ex)
+            {
+                await _signInManager.UserManager.DeleteAsync(userResult);
+                return BadRequest("Couldn't create user data. Try again or contact support");
+            } 
+
+            return Ok();
+
         }
 
         [AllowAnonymous]//Set anonymous to check validation

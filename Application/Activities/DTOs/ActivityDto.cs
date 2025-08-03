@@ -1,6 +1,13 @@
-namespace Domain
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Application.Profiles.DTOs;
+using Domain;
+
+namespace Application.Activities.DTOs
 {
-    public class Activity
+    public class ActivityDto
     {
         public Guid Id { get; set; }
         public string Title { get; set; }
@@ -8,11 +15,13 @@ namespace Domain
         public string Description { get; set; }
         public string Category { get; set; }
         public bool IsCancelled { get; set; }
+        public required string HostDisplayName { get; set; }
+        public required string HostId { get; set; }
         public string City { get; set; }
         public string Venue { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
 
-        public ICollection<ActivityAttendee> Attendees { get; set; } = [];
+        public ICollection<UserProfile> Attendees { get; set; } = [];
     }
 }

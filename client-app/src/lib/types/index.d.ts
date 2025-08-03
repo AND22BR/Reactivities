@@ -10,7 +10,14 @@ type Activity= {
   longitude: number
 }
 
-export interface LocationIQSuggestion {
+type User={
+  id: string
+  email: string
+  displayName: string
+  imageUrl?: string
+}
+
+type LocationIQSuggestion ={
   place_id: string
   osm_id: string
   osm_type: string
@@ -26,7 +33,7 @@ export interface LocationIQSuggestion {
   address: LocationIQAddress
 }
 
-export interface LocationIQAddress {
+type LocationIQAddress ={
   name: string
   road?: string
   neighbourhood?: string
@@ -40,3 +47,5 @@ export interface LocationIQAddress {
   country_code: string
   county?: string
 }
+
+

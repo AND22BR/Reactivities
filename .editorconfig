@@ -1,0 +1,12 @@
+    # Enforce underscore prefix for private instance fields
+    [*.cs]
+    dotnet_naming_rule.private_instance_fields.symbols = private_fields
+    dotnet_naming_rule.private_instance_fields.style = underscore_prefix
+    dotnet_naming_rule.private_instance_fields.severity = error
+
+    dotnet_naming_symbols.private_fields.applicable_kinds = field
+    dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+    dotnet_naming_symbols.private_fields.required_modifiers = instance
+
+    dotnet_naming_style.underscore_prefix.required_prefix = _
+    dotnet_naming_style.underscore_prefix.capitalization = camel_case

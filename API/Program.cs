@@ -3,8 +3,10 @@ using Application.Activities.Commands;
 using Application.Activities.Queries;
 using Application.Activities.Validators;
 using Application.Core;
+using Application.Interfaces;
 using Domain;
 using FluentValidation;
+using Infrastructure.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -54,6 +56,8 @@ builder.Services.AddMediatR(x =>
     x.AddOpenBehavior(typeof(ValidationBehavior<,>));
 }
 );
+
+builder.Services.AddScoped<IUserAccessor, UserAccessor>();
 builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 builder.Services.AddValidatorsFromAssemblyContaining<CreateActivityValidator>();
 builder.Services.AddTransient<ExceptionMiddleware>();
@@ -64,15 +68,24 @@ builder.Services.AddIdentityApiEndpoints<User>(opt =>
 .AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<AuthDbContext>();//https://learn.microsoft.com/en-us/aspnet/core/security/authentication/identity-api-authorization?view=aspnetcore-9.0
 
+// builder.Services.AddAuthorization(opt =>
+// {
+//     opt.AddPolicy("IsActivityHost", policy =>
+//     {
+//         policy.Requirements.Add(new IsHostRequirement());
+//     });
+// });
+builder.Services.AddTransient<IAuthorizationHandler, IsHostRequirementHandler>();
+
 // Add this configuration
-builder.Services.ConfigureApplicationCookie(options =>
-{
-    options.Cookie.SameSite = SameSiteMode.None; // For cross-origin requests
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // HTTPS only
-    options.Cookie.HttpOnly = true;
-    options.ExpireTimeSpan = TimeSpan.FromDays(7);
-    options.SlidingExpiration = true;
-});
+// builder.Services.ConfigureApplicationCookie(options =>
+// {
+//     options.Cookie.SameSite = SameSiteMode.None; // For cross-origin requests
+//     options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // HTTPS only
+//     options.Cookie.HttpOnly = true;
+//     options.ExpireTimeSpan = TimeSpan.FromDays(7);
+//     options.SlidingExpiration = true;
+// });
 
 var app = builder.Build();
     
@@ -101,14 +114,15 @@ try
 {
     var context = services.GetRequiredService<DataContext>();
     await context.Database.MigrateAsync();
-    await Seed.SeedData(context);
-
+    
     var userManager = services.GetRequiredService<UserManager<User>>();
     var authContext = services.GetRequiredService<AuthDbContext>();
     await authContext.Database.MigrateAsync();
     var seed = new Seed();
-    await seed.SeedSuperUser(authContext, userManager);
-    await seed.SeedTestUsers(authContext, userManager);
+    await seed.SeedSuperUser(authContext, context, userManager);
+    var users=await seed.SeedTestUsers(authContext, context, userManager);
+    
+    await Seed.SeedData(context, users);
 }
 catch (Exception ex)
 {
