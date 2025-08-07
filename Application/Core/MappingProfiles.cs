@@ -26,7 +26,8 @@ namespace Application.Core
                 .ForMember(d => d.DisplayName, o => o.MapFrom(s => s.UserData.DisplayName))
                 .ForMember(d => d.Bio, o => o.MapFrom(s => s.UserData.Bio))
                 .ForMember(d => d.ImageUrl, o => o.MapFrom(s => s.UserData.ImageUrl))
-                .ForMember(d=>d.Id, o=>o.MapFrom(s=>s.UserData.Id));
+                .ForMember(d => d.Id, o => o.MapFrom(s => s.UserData.Id));
+            CreateMap<Domain.UserData, UserProfile>();
         }
     }
 }
