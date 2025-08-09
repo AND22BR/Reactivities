@@ -43,8 +43,8 @@ export default function LoginForm() {
                 <Typography variant="h4">Sign in</Typography>
             </Box>
 
-            <TextInput label='Email' control={control} name='email'></TextInput>
-            <TextInput label='Password' control={control} name='password'></TextInput>
+            <TextInput label='Email' control={control} name='email' type="email"></TextInput>
+            <TextInput label='Password' control={control} name='password' type="password"></TextInput>
             <Button
                 type='submit'
                 disabled={!isValid || isSubmitting}
