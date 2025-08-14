@@ -4,6 +4,11 @@ import mkcert from 'vite-plugin-mkcert'
 
 // https://vite.dev/config/
 export default defineConfig({
+  build:{
+    outDir:'../client-app/build',
+    chunkSizeWarningLimit: 1500,
+    emptyOutDir: true
+  },
   server:{
     port:3000
   },

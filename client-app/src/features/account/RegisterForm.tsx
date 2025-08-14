@@ -1,11 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAccount } from "../../lib/hooks/useAccount"
-import { LoginSchema, loginSchema } from "../../lib/schemas/loginSchema";
 import { Paper, Box, Typography, Button } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { LockOpen } from "@mui/icons-material";
 import TextInput from "../../app/shared/components/TextInput";
-import { Link, useLocation, useNavigate } from "react-router";
+import { Link } from "react-router";
 import { registerSchema, RegisterSchema } from "../../lib/schemas/registerSchema";
 
 export default function RegisterForm() {

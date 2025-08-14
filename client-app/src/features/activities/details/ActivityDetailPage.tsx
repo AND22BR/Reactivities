@@ -1,13 +1,12 @@
 import { Grid, Typography } from "@mui/material";
 import { useActivities } from "../../../lib/hooks/useActivities";
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import ActivityDetailsInfo from "./ActivityDetailsInfo";
 import ActivityDetailsHeader from "./ActivityDetailsHeader";
 import ActivityDetailsChat from "./ActivityDetailsChat";
 import ActivityDetailsSidebar from "./ActivityDetailsSidebar";
 
 export default function ActivityDetail() {
-    const navigate=useNavigate();
     const {id}=useParams();
     const {activity, isLoadingActivity}=useActivities(id);
 

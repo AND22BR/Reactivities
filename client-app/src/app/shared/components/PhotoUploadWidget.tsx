@@ -1,10 +1,9 @@
 import { CloudUpload } from "@mui/icons-material";
 import { Box, Button, Grid, Typography } from "@mui/material";
-import React, {useCallback, useEffect, useRef, useState} from 'react'
+import {useCallback, useEffect, useRef, useState} from 'react'
 import {useDropzone} from 'react-dropzone'
 import Cropper, { ReactCropperElement } from "react-cropper";
 import "cropperjs/dist/cropper.css";
-import { file } from "zod";
 
 type Props={
     uploadPhoto: (file: Blob) => void

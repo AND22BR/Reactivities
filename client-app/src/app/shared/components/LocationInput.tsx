@@ -1,10 +1,11 @@
 import { Box, debounce, List, ListItemButton, TextField, Typography } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { FieldValues, useController, UseControllerProps } from "react-hook-form"
-import { LocationIQSuggestion } from "../../../lib/types";
 import axios from "axios";
 
-type Props<T extends FieldValues>={} & UseControllerProps<T>
+type Props<T extends FieldValues> = {
+    label?: string;
+} & UseControllerProps<T>
 
 export default function LocationInput<T extends FieldValues>(props: Props<T>) {
     const{field,fieldState}=useController({...props});
@@ -64,6 +65,7 @@ export default function LocationInput<T extends FieldValues>(props: Props<T>) {
     <Box>
         <TextField
             {...props}
+            label={props.label}
             value={inputValue}
             onChange={e=>handleChange(e.target.value)}
             fullWidth

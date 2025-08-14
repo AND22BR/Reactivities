@@ -6,7 +6,6 @@ type Props={
 
 export default function ActivityDetailsSidebar({activity}: Props) {
     const following = true;
-    const isHost = true;
     return (
         <>
             <Paper

@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react-lite';
 import { useStore } from '../../lib/hooks/useStore';
-import { Box, Button, ButtonGroup, List, ListItem, ListItemText, Paper, Typography } from '@mui/material';
+import { Box, Button, ButtonGroup, List, ListItemText, Paper, Typography } from '@mui/material';
 
 export default observer(function Counter() {
 const {counterStore} = useStore();  

@@ -1,6 +1,5 @@
 import { SearchOff } from "@mui/icons-material";
 import { Button, Paper, Typography } from "@mui/material";
-import { alignItems, flexDirection, justifyContent } from "@mui/system";
 import { Link } from "react-router";
 
 export default function NotFound() {

@@ -1,6 +1,5 @@
 import * as React from 'react';
 import Popover from '@mui/material/Popover';
-import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import { Avatar } from '@mui/material';
 import { Link } from 'react-router';
