@@ -23,6 +23,7 @@ jobs:
       - name: Clear npm cache
         run: |
           npm cache clean --force
+          npm install -D @swc/cli @swc/core
           
       - name: Build And Deploy
         id: builddeploy
@@ -50,5 +51,6 @@ jobs:
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_YELLOW_POND_05AE73010 }}
           action: "close"
+
 
 
