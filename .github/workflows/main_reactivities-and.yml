@@ -27,6 +27,8 @@ jobs:
         #need --package-lock-only first because it tells what versions to install, which might be different depending on OS. error: Failed to load native binding
         run: |
           cd client-app
+          rm -rf node_modules
+          rm package-lock.json
           npm install --package-lock-only 
           npm install
           npm run build 
