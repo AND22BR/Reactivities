@@ -34,12 +34,12 @@ builder.Services.AddControllers(opt =>
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<DataContext>(opt =>
 {
-    opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
 builder.Services.AddDbContext<AuthDbContext>(opt =>
 {
-    opt.UseSqlite(builder.Configuration.GetConnectionString("AuthConnection"));
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("AuthConnection"));
 });
 
 builder.Services.AddCors(opt =>{
@@ -107,10 +107,15 @@ app.UseCors("CorsPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 app.MapControllers();
 app.MapGroup("api").MapIdentityApi<User>(); // api/login
+app.MapFallbackToController("Index", "Fallback");
 
-using var scope=app.Services.CreateScope();
+
+using var scope = app.Services.CreateScope();
 var services=scope.ServiceProvider;
 
 try

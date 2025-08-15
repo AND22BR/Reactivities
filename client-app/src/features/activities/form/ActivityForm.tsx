@@ -82,7 +82,7 @@ export default function ActivityForm() {
             </Box>
             <LocationInput<ActivitySchema> label='Enter the location' control={control} name='location'></LocationInput>
             <Box display="flex" justifyContent="end" gap={3}>
-                <Button color="inherit">Cancel</Button>
+                <Button onClick={()=> navigate(-1)} color="inherit">Cancel</Button>
                 <Button 
                   type="submit" 
                   color="success" 
