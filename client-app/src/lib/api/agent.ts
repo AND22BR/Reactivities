@@ -52,7 +52,12 @@ agent.interceptors.response.use(
                 }
                 break;
             case 401:
-                toast.error("Unauth.");
+                if(data.detail=="NotAllowed")
+                {
+                    throw new Error(data.detail)
+                }else{
+                    toast.error("Unauth.");
+                }
                 break;
             case 404:
                 router.navigate('/not-found')

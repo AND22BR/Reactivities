@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using API.DTOs;
 using Application.UserData.Commands;
@@ -8,6 +9,8 @@ using Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 namespace API.Controllers
@@ -17,10 +20,16 @@ namespace API.Controllers
     public class AccountController : BaseApiController
     {
         private readonly SignInManager<User> _signInManager;
+        private readonly IEmailSender<User> _emailSender;
+        private readonly IConfiguration _config;
 
-        public AccountController(SignInManager<User> signInManager)
+        public AccountController(SignInManager<User> signInManager,
+        IEmailSender<User> emailSender,
+        IConfiguration config)
         {
             _signInManager = signInManager;
+            _emailSender = emailSender;
+            _config = config;
         }
 
         [AllowAnonymous]
@@ -36,14 +45,18 @@ namespace API.Controllers
 
             var result = await _signInManager.UserManager.CreateAsync(user, registerDto.Password);
 
-            if(!result.Succeeded)
+            if (!result.Succeeded)
             {
                 foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError(error.Code, error.Description);
-                    }
+                {
+                    ModelState.AddModelError(error.Code, error.Description);
+                }
 
-                return ValidationProblem();    
+                return ValidationProblem();
+            }
+            else
+            {
+                await SendConfirmationEmailAsync(user, registerDto.Email);
             }
 
             var userResult = await _signInManager.UserManager.FindByEmailAsync(user.Email);
@@ -70,6 +83,32 @@ namespace API.Controllers
 
             return Ok();
 
+        }
+
+        [AllowAnonymous]
+        [HttpGet("resendConfirmEmail")]
+        public async Task<ActionResult> ResendConfirmEmail(string? email, string? userId)
+        {
+            if (string.IsNullOrEmpty(email) && string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("Email or user id must be provided");
+            }
+
+            var user = await _signInManager.UserManager.Users.FirstOrDefaultAsync(x=>x.Email==email || x.Id==userId);
+
+            if (user is null) return BadRequest("User not found");
+
+            await SendConfirmationEmailAsync(user, user.Email);
+            return Ok();
+        }
+
+        private async Task SendConfirmationEmailAsync(User user, string email)
+        {
+            var code = await _signInManager.UserManager.GenerateEmailConfirmationTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+            var confirmEmailUrl = $"{_config["ClientAppUrl"]}/confirm-email?userId={user.Id}&code={code}";
+            await _emailSender.SendConfirmationLinkAsync(user, user.Email, confirmEmailUrl);
         }
 
         [AllowAnonymous]//Set anonymous to check validation
