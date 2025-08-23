@@ -67,4 +67,10 @@ type LocationIQAddress ={
   county?: string
 }
 
+type ResetPassword={
+  email: string,
+  resetCode: string,
+  newPassword: string
+}
+
 

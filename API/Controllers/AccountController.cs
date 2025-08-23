@@ -68,7 +68,7 @@ namespace API.Controllers
                 UserName = userResult.UserName,
                 DisplayName = userResult.DisplayName,
                 Bio = userResult.Bio,
-                ImageUrl=userResult.ImageUrl
+                ImageUrl = userResult.ImageUrl
             };
 
             try
@@ -79,7 +79,7 @@ namespace API.Controllers
             {
                 await _signInManager.UserManager.DeleteAsync(userResult);
                 return BadRequest("Couldn't create user data. Try again or contact support");
-            } 
+            }
 
             return Ok();
 
@@ -94,7 +94,7 @@ namespace API.Controllers
                 return BadRequest("Email or user id must be provided");
             }
 
-            var user = await _signInManager.UserManager.Users.FirstOrDefaultAsync(x=>x.Email==email || x.Id==userId);
+            var user = await _signInManager.UserManager.Users.FirstOrDefaultAsync(x => x.Email == email || x.Id == userId);
 
             if (user is null) return BadRequest("User not found");
 
@@ -137,6 +137,22 @@ namespace API.Controllers
             await _signInManager.SignOutAsync();
 
             return NoContent();
+        }
+
+        [HttpPost("change-password")]
+        public async Task<ActionResult> ChangePassword(ChangePasswordDto changePasswordDto)
+        {
+            var user = await _signInManager.UserManager.GetUserAsync(User);
+
+            if (user is null) return Unauthorized();
+
+            var result = await _signInManager.UserManager.ChangePasswordAsync(user,
+            changePasswordDto.CurrentPassword,
+            changePasswordDto.NewPassword);
+
+            if (result.Succeeded) return Ok();
+
+            return BadRequest(result.Errors.First().Description);
         }
     }
 }
