@@ -4,10 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Domain;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 
 namespace Infrastructure.Email
 {
-    public class EmailSender(IMailgun mailgun) : IEmailSender<User>
+    public class EmailSender(IMailgun mailgun, IConfiguration config) : IEmailSender<User>
     {
         public async Task SendConfirmationLinkAsync(User user, string email, string confirmationLink)
         {
@@ -22,9 +23,19 @@ namespace Infrastructure.Email
             await mailgun.Send(email, subject, body);
         }
 
-        public Task SendPasswordResetCodeAsync(User user, string email, string resetCode)
+        public async Task SendPasswordResetCodeAsync(User user, string email, string resetCode)
         {
-            throw new NotImplementedException();
+            var subject = "Reset your password";
+            var body = $@"
+                <p>Hi {user.DisplayName}</p>
+                <p>Please this link to reset your password</p>
+                <p><a href='{config["ClientAppUrl"]}/reset-password?email={email}&code={resetCode}'>
+                    Click to reset your password
+                </a></p>
+                <p>If you did not request this, contact support.</p>
+            ";
+
+            await mailgun.Send(email, subject, body);
         }
 
         public Task SendPasswordResetLinkAsync(User user, string email, string resetLink)
