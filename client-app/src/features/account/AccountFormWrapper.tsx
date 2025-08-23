@@ -30,7 +30,7 @@ export default function AccountFormWrapper<TFormData extends FieldValues>({
     return (
         <FormProvider {...methods}>
             <Paper component='form'
-                onSubmit={methods.handleSubmit(onSubmit)}
+                onSubmit={methods.handleSubmit(formSubmit)}
                 sx={{
                     dispaly: 'flex',
                     flexDirection: 'column',
