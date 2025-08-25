@@ -5,7 +5,7 @@ import { ReactNode } from "react";
 type Props<TFormData extends FieldValues> = {
     title: string
     icon: ReactNode
-    onSubmit: (data: TFormData) => void
+    onSubmit: (data: TFormData) => Promise<void>
     children: ReactNode
     submitButtonText: string
     resolver?: Resolver<TFormData>
@@ -22,8 +22,8 @@ export default function AccountFormWrapper<TFormData extends FieldValues>({
     reset
 }: Props<TFormData>) {
     const methods = useForm<TFormData>({ resolver, mode: 'onTouched' })
-    const formSubmit=(data: TFormData)=>{
-        onSubmit(data);
+    const formSubmit=async (data: TFormData)=>{
+        await onSubmit(data);
         if(reset) methods.reset;
     }
 
@@ -32,7 +32,7 @@ export default function AccountFormWrapper<TFormData extends FieldValues>({
             <Paper component='form'
                 onSubmit={methods.handleSubmit(formSubmit)}
                 sx={{
-                    dispaly: 'flex',
+                    display: 'flex',
                     flexDirection: 'column',
                     p: 3,
                     gap: 3,

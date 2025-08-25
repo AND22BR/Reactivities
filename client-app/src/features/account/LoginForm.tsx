@@ -3,7 +3,7 @@ import { useAccount } from "../../lib/hooks/useAccount"
 import { LoginSchema, loginSchema } from "../../lib/schemas/loginSchema";
 import { Paper, Box, Typography, Button } from "@mui/material";
 import { useForm } from "react-hook-form";
-import { LockOpen } from "@mui/icons-material";
+import { LockOpen, Microsoft } from "@mui/icons-material";
 import TextInput from "../../app/shared/components/TextInput";
 import { Link, useLocation, useNavigate } from "react-router";
 import { useState } from "react";
@@ -31,6 +31,13 @@ export default function LoginForm() {
         }
     }
 
+    const loginWithMicrosoft=()=>{
+        const clientId=import.meta.env.VITE_MICROSOFT_CLIENT_ID;
+        const redirectUrl=import.meta.env.VITE_REDIRECT_URL;
+        const tenantId=import.meta.env.VITE_MICROSOFT_TENANT_ID;
+        window.location.href=`https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/authorize?client_id=${clientId}&redirect_uri=${redirectUrl}&response_type=code&scope=https%3A%2F%2Fgraph.microsoft.com%2Fmail.read` //https://learn.microsoft.com/en-us/entra/identity-platform/v2-oauth2-auth-code-flow
+    }
+
     const onSubmit = async (data: LoginSchema) => {
         await loginUser.mutateAsync(data, {
             onSuccess: ()=>{
@@ -47,7 +54,7 @@ export default function LoginForm() {
         <Paper component='form'
             onSubmit={handleSubmit(onSubmit)}
             sx={{
-                dispaly: 'flex',
+                display: 'flex',
                 flexDirection: 'column',
                 p: 3,
                 gap: 3,
@@ -71,6 +78,14 @@ export default function LoginForm() {
                 variant="contained"
                 size="large">
                 Login
+            </Button>
+            <Button onClick={loginWithMicrosoft}
+                startIcon={<Microsoft/>}
+                type="button" 
+                variant="contained"
+                size="large"
+                >
+                    Login with Microsoft
             </Button>
             {notVerified ? (
                 <Box display='flex' flexDirection='column' justifyContent='center'>
