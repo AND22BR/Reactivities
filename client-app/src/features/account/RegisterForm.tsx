@@ -39,7 +39,7 @@ export default function RegisterForm() {
                  <Paper component='form'
             onSubmit={handleSubmit(onSubmit)}
             sx={{
-                dispaly: 'flex',
+                display: 'flex',
                 flexDirection: 'column',
                 p: 3,
                 gap: 3,
